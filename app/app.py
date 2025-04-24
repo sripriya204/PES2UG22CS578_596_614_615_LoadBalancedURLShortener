@@ -1,9 +1,14 @@
 from flask import Flask, request, redirect, jsonify, render_template
 import redis
 import hashlib
+import os
 
 app = Flask(__name__)
-r = redis.Redis(host='redis', port=6379)
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
+redis_port = int(os.environ.get('REDIS_PORT', 6379)) 
+
+
+r = redis.Redis(host=redis_host, port=redis_port)
 
 @app.route('/')
 def index():
@@ -44,3 +49,8 @@ if __name__ == '__main__':
 # curl -X POST http://localhost:5050/shorten \
 #      -H "Content-Type: application/json" \
 #      -d '{"url": "https://example.com"}'
+
+
+# to access redis: docker exec -it redis redis-cli
+# to view keys: KEYS *
+# to view values: GET <key>
